@@ -11,7 +11,7 @@ window.location.href="age.html";
 
 <title>UltraTube Pro</title>
 
-<!-- 🔥 EXOCLICK (ONLY ONCE) -->
+<!-- 🔥 EXOCLICK SCRIPT -->
 <script async src="https://a.magsrv.com/ad-provider.js"></script>
 
 <style>
@@ -39,26 +39,8 @@ button{padding:8px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
 
 <!-- 🔥 TOP ADS -->
 <div class="banner">
-
-<!-- Adsterra -->
-<script>
-atOptions = {
-'key' : '1f1627a1c71be4ed4d7643acf6820eca',
-'format' : 'iframe',
-'height' : 90,
-'width' : 728
-};
-</script>
-<script src="https://www.highperformanceformat.com/1f1627a1c71be4ed4d7643acf6820eca/invoke.js"></script>
-
-<!-- ExoClick ZONE 5875104 -->
 <ins class="eas6a97888e42" data-zoneid="5875104"></ins>
-<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
-
-<!-- ExoClick ZONE 5875106 -->
 <ins class="eas6a97888e2" data-zoneid="5875106"></ins>
-<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
-
 </div>
 
 <!-- HOME -->
@@ -72,15 +54,8 @@ atOptions = {
 
 <!-- 🔥 VIDEO ADS -->
 <div class="banner">
-
-<!-- Zone 5875104 -->
 <ins class="eas6a97888e42" data-zoneid="5875104"></ins>
-<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
-
-<!-- Zone 5875106 -->
 <ins class="eas6a97888e2" data-zoneid="5875106"></ins>
-<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
-
 </div>
 
 <button class="like" onclick="like()">❤️ <span id="likeCount">0</span></button>
@@ -92,28 +67,9 @@ atOptions = {
 
 <div id="comments"></div>
 
-<!-- 🔥 SIDE ADS -->
-<div class="banner">
-<script>
-atOptions = {
-'key' : '203b5326fe739318a9378e171c1bee86',
-'format' : 'iframe',
-'height' : 300,
-'width' : 160
-};
-</script>
-<script src="https://www.highperformanceformat.com/203b5326fe739318a9378e171c1bee86/invoke.js"></script>
-</div>
-
 <h3>🔥 Next Videos</h3>
 <div id="related" class="grid"></div>
 
-</div>
-
-<!-- 🔥 NATIVE -->
-<div style="padding:10px">
-<script async src="https://pl28928385.effectivegatecpm.com/f179e52f0ab63cc7370d65aa83c35868/invoke.js"></script>
-<div id="container-f179e52f0ab63cc7370d65aa83c35868"></div>
 </div>
 
 <!-- FIREBASE -->
@@ -122,7 +78,7 @@ atOptions = {
 
 <script>
 const firebaseConfig = {
-apiKey: "AIzaSyAtZuLT5YjCOKU8YIV3W-NF_-duahkYYWI",
+apiKey: "AIzaSy...",
 authDomain: "protube-4ea04.firebaseapp.com",
 databaseURL: "https://protube-4ea04-default-rtdb.firebaseio.com",
 projectId: "protube-4ea04"
@@ -132,13 +88,14 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let videos={}, currentId=null;
-let adShown=false;
 
+/* LOAD VIDEOS */
 db.ref("videos").on("value",snap=>{
 videos=snap.val()||{};
 showHome();
 });
 
+/* HOME */
 function showHome(){
 let html="";
 for(let id in videos){
@@ -152,28 +109,29 @@ html+=`
 document.getElementById("home").innerHTML=html;
 }
 
+/* PLAY */
 function play(id){
 currentId=id;
-let v=videos[id];
 
+/* 🔥 FORCE ADS */
+(AdProvider = window.AdProvider || []).push({"serve": {}});
+
+let v=videos[id];
 document.getElementById("home").style.display="none";
 document.getElementById("player").style.display="block";
-
-/* SMARTLINK */
-if(!adShown){
-setTimeout(()=>{
-window.open("https://www.effectivegatecpm.com/mjmc3d5a?key=b554dccefdc104a100d7e0fb1cf9b78b","_blank");
-},3000);
-adShown=true;
-}
 
 startVideo(v);
 }
 
+/* VIDEO */
 function startVideo(v){
 let video=document.getElementById("video");
 video.src=v.url;
+
+video.play().catch(()=>{
+video.muted=true;
 video.play();
+});
 
 document.getElementById("title").innerText=v.title;
 document.getElementById("likeCount").innerText=v.likes||0;
@@ -184,15 +142,18 @@ loadComments();
 loadRelated(currentId);
 }
 
+/* BACK */
 function back(){
 document.getElementById("player").style.display="none";
 document.getElementById("home").style.display="grid";
 }
 
+/* LIKE */
 function like(){
 db.ref("videos/"+currentId+"/likes").transaction(v=>(v||0)+1);
 }
 
+/* COMMENT */
 function comment(){
 let txt=document.getElementById("commentInput").value;
 if(!txt)return;
@@ -200,6 +161,7 @@ db.ref("comments/"+currentId).push({text:txt});
 document.getElementById("commentInput").value="";
 }
 
+/* COMMENTS */
 function loadComments(){
 db.ref("comments/"+currentId).on("value",snap=>{
 let data=snap.val()||{};
@@ -211,6 +173,7 @@ document.getElementById("comments").innerHTML=html;
 });
 }
 
+/* RELATED */
 function loadRelated(current){
 let html="";
 for(let id in videos){
@@ -226,18 +189,31 @@ html+=`
 document.getElementById("related").innerHTML=html;
 }
 
+/* AUTO NEXT */
 function autoNext(){
 let keys=Object.keys(videos);
 let next=keys[Math.floor(Math.random()*keys.length)];
 play(next);
 }
+
+/* 🔥 LOAD ADS */
+window.onload = function(){
+setTimeout(()=>{
+(AdProvider = window.AdProvider || []).push({"serve": {}});
+},2000);
+};
+
+/* 🔥 CLICK ADS */
+document.addEventListener("click", function(){
+(AdProvider = window.AdProvider || []).push({"serve": {}});
+});
+
+/* 🔥 REFRESH ADS */
+setInterval(()=>{
+(AdProvider = window.AdProvider || []).push({"serve": {}});
+},15000);
+
 </script>
-
-<!-- SOCIAL BAR -->
-<script src="https://pl28928363.effectivegatecpm.com/78/30/4f/78304f552b11c57342231d1f927b7973.js"></script>
-
-<!-- POPUNDER -->
-<script src="https://pl28926541.effectivegatecpm.com/af/d5/c2/afd5c28cb2a62be513d68d8f96287668.js"></script>
 
 </body>
 </html>
