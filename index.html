@@ -11,8 +11,9 @@ window.location.href="age.html";
 
 <title>UltraTube Pro</title>
 
-<!-- 🔥 EXOCLICK SCRIPT (ONLY ONCE) -->
+<!-- 🔥 EXOCLICK SCRIPTS (LOAD BOTH) -->
 <script async src="https://a.magsrv.com/ad-provider.js"></script>
+<script async src="https://a.pemsrv.com/ad-provider.js"></script>
 
 <style>
 body{margin:0;background:#0b0f1a;color:white;font-family:Arial;}
@@ -39,11 +40,15 @@ button{padding:8px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
 
 <!-- 🔥 TOP ADS -->
 <div class="banner">
+
+<!-- OLD ZONES -->
 <ins class="eas6a97888e42" data-zoneid="5875104"></ins>
 <ins class="eas6a97888e2" data-zoneid="5875106"></ins>
-
-<!-- 🆕 NEW ZONE -->
 <ins class="eas6a97888e6" data-zoneid="5875124"></ins>
+
+<!-- 🆕 NEW PEMSRV ZONE -->
+<ins class="eas6a97888e35" data-zoneid="5875136"></ins>
+
 </div>
 
 <!-- HOME -->
@@ -57,11 +62,14 @@ button{padding:8px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
 
 <!-- 🔥 VIDEO ADS -->
 <div class="banner">
+
 <ins class="eas6a97888e42" data-zoneid="5875104"></ins>
 <ins class="eas6a97888e2" data-zoneid="5875106"></ins>
-
-<!-- 🆕 NEW ZONE -->
 <ins class="eas6a97888e6" data-zoneid="5875124"></ins>
+
+<!-- 🆕 NEW -->
+<ins class="eas6a97888e35" data-zoneid="5875136"></ins>
+
 </div>
 
 <button class="like" onclick="like()">❤️ <span id="likeCount">0</span></button>
@@ -95,7 +103,7 @@ const db = firebase.database();
 
 let videos={}, currentId=null;
 
-/* LOAD VIDEOS */
+/* LOAD */
 db.ref("videos").on("value",snap=>{
 videos=snap.val()||{};
 showHome();
