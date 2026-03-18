@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>18+ Verification</title>
+
+<style>
+body{
+margin:0;
+background:#0b0f1a;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+text-align:center;
+}
+
+.box{
+background:#1a1f2e;
+padding:30px;
+border-radius:10px;
+width:300px;
+}
+
+button{
+padding:10px 20px;
+margin:10px;
+border:none;
+border-radius:6px;
+cursor:pointer;
+font-size:16px;
+}
+
+.yes{background:red;color:white;}
+.no{background:gray;color:white;}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>🔞 Age Verification</h2>
+<p>You must be 18+ to enter this site.</p>
+
+<button class="yes" onclick="enter()">Yes, I am 18+</button>
+<button class="no" onclick="exit()">No</button>
+</div>
+
+<script>
+function enter(){
+localStorage.setItem("age","yes");
+window.location.href="index.html";
+}
+
+function exit(){
+alert("You must be 18+ to access this site.");
+window.location.href="https://google.com";
+}
+</script>
+
+</body>
+</html>
+
