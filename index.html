@@ -11,9 +11,8 @@ window.location.href="age.html";
 
 <title>UltraTube Pro</title>
 
-<!-- 🔥 EXOCLICK SCRIPTS (LOAD BOTH) -->
+<!-- ✅ ONLY ONE AD SCRIPT -->
 <script async src="https://a.magsrv.com/ad-provider.js"></script>
-<script async src="https://a.pemsrv.com/ad-provider.js"></script>
 
 <style>
 body{margin:0;background:#0b0f1a;color:white;font-family:Arial;}
@@ -38,17 +37,14 @@ button{padding:8px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
 <button onclick="back()">⬅ Back</button>
 </div>
 
-<!-- 🔥 TOP ADS -->
+<!-- 🔥 TOP AD -->
 <div class="banner">
-
-<!-- OLD ZONES -->
-<ins class="eas6a97888e42" data-zoneid="5875104"></ins>
 <ins class="eas6a97888e2" data-zoneid="5875106"></ins>
-<ins class="eas6a97888e6" data-zoneid="5875124"></ins>
+</div>
 
-<!-- 🆕 NEW PEMSRV ZONE -->
-<ins class="eas6a97888e35" data-zoneid="5875136"></ins>
-
+<!-- TEST BUTTON -->
+<div style="text-align:center;">
+<button onclick="loadAd()">👉 Load Ads</button>
 </div>
 
 <!-- HOME -->
@@ -60,16 +56,9 @@ button{padding:8px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
 <video id="video" controls></video>
 <h3 id="title"></h3>
 
-<!-- 🔥 VIDEO ADS -->
+<!-- 🔥 VIDEO AD -->
 <div class="banner">
-
-<ins class="eas6a97888e42" data-zoneid="5875104"></ins>
 <ins class="eas6a97888e2" data-zoneid="5875106"></ins>
-<ins class="eas6a97888e6" data-zoneid="5875124"></ins>
-
-<!-- 🆕 NEW -->
-<ins class="eas6a97888e35" data-zoneid="5875136"></ins>
-
 </div>
 
 <button class="like" onclick="like()">❤️ <span id="likeCount">0</span></button>
@@ -103,7 +92,7 @@ const db = firebase.database();
 
 let videos={}, currentId=null;
 
-/* LOAD */
+/* LOAD VIDEOS */
 db.ref("videos").on("value",snap=>{
 videos=snap.val()||{};
 showHome();
@@ -127,8 +116,8 @@ document.getElementById("home").innerHTML=html;
 function play(id){
 currentId=id;
 
-/* 🔥 FORCE ADS */
-(AdProvider = window.AdProvider || []).push({"serve": {}});
+/* 🔥 ADS TRIGGER */
+loadAd();
 
 let v=videos[id];
 document.getElementById("home").style.display="none";
@@ -154,6 +143,11 @@ video.onended=()=>autoNext();
 
 loadComments();
 loadRelated(currentId);
+}
+
+/* LOAD AD FUNCTION */
+function loadAd(){
+(AdProvider = window.AdProvider || []).push({"serve": {}});
 }
 
 /* BACK */
@@ -210,22 +204,13 @@ let next=keys[Math.floor(Math.random()*keys.length)];
 play(next);
 }
 
-/* 🔥 LOAD ADS */
+/* 🔥 AUTO LOAD */
 window.onload = function(){
-setTimeout(()=>{
-(AdProvider = window.AdProvider || []).push({"serve": {}});
-},2000);
+setTimeout(loadAd,2000);
 };
 
-/* 🔥 CLICK ADS */
-document.addEventListener("click", function(){
-(AdProvider = window.AdProvider || []).push({"serve": {}});
-});
-
-/* 🔥 AUTO REFRESH */
-setInterval(()=>{
-(AdProvider = window.AdProvider || []).push({"serve": {}});
-},15000);
+/* 🔥 CLICK TRIGGER */
+document.addEventListener("click", loadAd);
 
 </script>
 
