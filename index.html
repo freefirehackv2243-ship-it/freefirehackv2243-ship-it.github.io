@@ -1,9 +1,232 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>My Website</title>
+
+<!-- AGE PROTECTION -->
+<script>
+if(localStorage.getItem("age")!="yes"){
+window.location.href="age.html";
+}
+</script>
+
+<title>UltraTube Pro</title>
+
+<!-- EXOCLICK MAIN SCRIPT -->
+<script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+
+<style>
+body{margin:0;background:#0b0f1a;color:white;font-family:Arial;}
+.header{padding:10px;background:#111;display:flex;justify-content:space-between;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;padding:15px;}
+.card{background:#1a1f2e;border-radius:10px;overflow:hidden;cursor:pointer;}
+img{width:100%;height:150px;object-fit:cover;}
+.player{display:none;padding:15px;}
+video{width:100%;border-radius:10px;}
+button{padding:8px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
+.like{background:red;color:white;}
+.comment{background:#1a1f2e;margin:5px;padding:5px;border-radius:5px;}
+.banner{text-align:center;margin:10px 0;}
+</style>
+
 </head>
+
 <body>
-  <h1>🔥 Site Live 😈</h1>
+
+<div class="header">
+<h2>🔥 UltraTube</h2>
+<button onclick="back()">⬅ Back</button>
+</div>
+
+<!-- 🔥 TOP BANNER -->
+<div class="banner">
+<script>
+atOptions = {
+'key' : '1f1627a1c71be4ed4d7643acf6820eca',
+'format' : 'iframe',
+'height' : 90,
+'width' : 728
+};
+</script>
+<script src="https://www.highperformanceformat.com/1f1627a1c71be4ed4d7643acf6820eca/invoke.js"></script>
+</div>
+
+<!-- 🔥 EXOCLICK NEW ZONE (5875104) -->
+<div class="banner">
+<ins class="eas6a97888e42" data-zoneid="5875104"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+</div>
+
+<!-- HOME -->
+<div id="home" class="grid"></div>
+
+<!-- PLAYER -->
+<div id="player" class="player">
+
+<video id="video" controls></video>
+
+<h3 id="title"></h3>
+
+<!-- 🔥 VIDEO AD (NEW ZONE) -->
+<div class="banner">
+<ins class="eas6a97888e42" data-zoneid="5875104"></ins>
+<script>(AdProvider = window.AdProvider || []).push({"serve": {}});</script>
+</div>
+
+<button class="like" onclick="like()">❤️ <span id="likeCount">0</span></button>
+
+<br>
+
+<input id="commentInput" placeholder="Comment..." style="width:70%">
+<button onclick="comment()">Post</button>
+
+<div id="comments"></div>
+
+<!-- 🔥 SIDE BANNER -->
+<div class="banner">
+<script>
+atOptions = {
+'key' : '203b5326fe739318a9378e171c1bee86',
+'format' : 'iframe',
+'height' : 300,
+'width' : 160
+};
+</script>
+<script src="https://www.highperformanceformat.com/203b5326fe739318a9378e171c1bee86/invoke.js"></script>
+</div>
+
+<h3>🔥 Next Videos</h3>
+<div id="related" class="grid"></div>
+
+</div>
+
+<!-- 🔥 NATIVE -->
+<div style="padding:10px">
+<script async src="https://pl28928385.effectivegatecpm.com/f179e52f0ab63cc7370d65aa83c35868/invoke.js"></script>
+<div id="container-f179e52f0ab63cc7370d65aa83c35868"></div>
+</div>
+
+<!-- FIREBASE -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+const firebaseConfig = {
+apiKey: "AIzaSyAtZuLT5YjCOKU8YIV3W-NF_-duahkYYWI",
+authDomain: "protube-4ea04.firebaseapp.com",
+databaseURL: "https://protube-4ea04-default-rtdb.firebaseio.com",
+projectId: "protube-4ea04"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+let videos={}, currentId=null;
+let adShown=false;
+
+db.ref("videos").on("value",snap=>{
+videos=snap.val()||{};
+showHome();
+});
+
+function showHome(){
+let html="";
+for(let id in videos){
+let v=videos[id];
+html+=`
+<div class="card" onclick="play('${id}')">
+<img src="${v.thumb}">
+<h4>${v.title}</h4>
+</div>`;
+}
+document.getElementById("home").innerHTML=html;
+}
+
+function play(id){
+currentId=id;
+let v=videos[id];
+
+document.getElementById("home").style.display="none";
+document.getElementById("player").style.display="block";
+
+/* SMARTLINK */
+if(!adShown){
+setTimeout(()=>{
+window.open("https://www.effectivegatecpm.com/mjmc3d5a?key=b554dccefdc104a100d7e0fb1cf9b78b","_blank");
+},3000);
+adShown=true;
+}
+
+startVideo(v);
+}
+
+function startVideo(v){
+let video=document.getElementById("video");
+video.src=v.url;
+video.play();
+
+document.getElementById("title").innerText=v.title;
+document.getElementById("likeCount").innerText=v.likes||0;
+
+video.onended=()=>autoNext();
+
+loadComments();
+loadRelated(currentId);
+}
+
+function back(){
+document.getElementById("player").style.display="none";
+document.getElementById("home").style.display="grid";
+}
+
+function like(){
+db.ref("videos/"+currentId+"/likes").transaction(v=>(v||0)+1);
+}
+
+function comment(){
+let txt=document.getElementById("commentInput").value;
+if(!txt)return;
+db.ref("comments/"+currentId).push({text:txt});
+document.getElementById("commentInput").value="";
+}
+
+function loadComments(){
+db.ref("comments/"+currentId).on("value",snap=>{
+let data=snap.val()||{};
+let html="";
+for(let i in data){
+html+=`<div class="comment">${data[i].text}</div>`;
+}
+document.getElementById("comments").innerHTML=html;
+});
+}
+
+function loadRelated(current){
+let html="";
+for(let id in videos){
+if(id!==current){
+let v=videos[id];
+html+=`
+<div class="card" onclick="play('${id}')">
+<img src="${v.thumb}">
+<h4>${v.title}</h4>
+</div>`;
+}
+}
+document.getElementById("related").innerHTML=html;
+}
+
+function autoNext(){
+let keys=Object.keys(videos);
+let next=keys[Math.floor(Math.random()*keys.length)];
+play(next);
+}
+</script>
+
+<!-- 🔥 SOCIAL BAR -->
+<script src="https://pl28928363.effectivegatecpm.com/78/30/4f/78304f552b11c57342231d1f927b7973.js"></script>
+
+<!-- 🔥 POPUNDER -->
+<script src="https://pl28926541.effectivegatecpm.com/af/d5/c2/afd5c28cb2a62be513d68d8f96287668.js"></script>
+
 </body>
 </html>
