@@ -3,6 +3,10 @@
 <head>
   <title>🔥 VideoHub Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <!-- 🔥 Ads Script (HEAD e) -->
+  <script async type="application/javascript" src="https://a.magsrv.com/ad-provider.js"></script>
+
   <style>
     body{background:#0d0d0d;color:#fff;font-family:sans-serif;margin:0}
     header{padding:15px;text-align:center;color:#ff3d00;font-size:22px}
@@ -10,6 +14,7 @@
     .card{background:#1a1a1a;border-radius:10px;overflow:hidden;cursor:pointer}
     .card img{width:100%;height:120px;object-fit:cover}
     .title{padding:6px;font-size:14px}
+    .ad-box{padding:10px;text-align:center}
   </style>
 </head>
 
@@ -17,12 +22,25 @@
 
 <header>🔥 VideoHub Pro</header>
 
+<!-- 🔥 TOP ADS -->
+<div class="ad-box">
+  <ins class="eas6a97888e2" data-zoneid="5875708"></ins>
+</div>
+
 <div class="grid" id="videos"></div>
+
+<!-- 🔥 BOTTOM ADS -->
+<div class="ad-box">
+  <ins class="eas6a97888e2" data-zoneid="5875708"></ins>
+</div>
+
+<script>
+(AdProvider = window.AdProvider || []).push({"serve": {}});
+</script>
 
 <script>
 let videos = JSON.parse(localStorage.getItem("videos"));
 
-// 👉 FIX: if empty, add demo video
 if(!videos || videos.length === 0){
   videos = [
     {
