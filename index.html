@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>VideoHub Pro</title>
+  <title>🔥 VideoHub Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     body{background:#0d0d0d;color:#fff;font-family:sans-serif;margin:0}
@@ -20,15 +20,35 @@
 <div class="grid" id="videos"></div>
 
 <script>
-let videos = JSON.parse(localStorage.getItem("videos")) || [];
-let container = document.getElementById("videos");
+let videos = JSON.parse(localStorage.getItem("videos"));
 
-if(videos.length === 0){
-  container.innerHTML = "<p style='padding:20px'>No videos yet. Upload first.</p>";
+// 👉 FIX: if empty, add demo video
+if(!videos || videos.length === 0){
+  videos = [
+    {
+      title:"Demo Video",
+      src:"https://www.w3schools.com/html/mov_bbb.mp4",
+      thumb:"https://picsum.photos/300/200"
+    }
+  ];
+  localStorage.setItem("videos", JSON.stringify(videos));
 }
+
+let container = document.getElementById("videos");
 
 videos.forEach((v,i)=>{
   container.innerHTML += `
     <div class="card" onclick="openVideo(${i})">
       <img src="${v.thumb}">
-      <div class
+      <div class="title">${v.title}</div>
+    </div>
+  `;
+});
+
+function openVideo(i){
+  location.href = "player.html?id=" + i;
+}
+</script>
+
+</body>
+</html>
