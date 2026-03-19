@@ -1,218 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-<!-- AGE CHECK -->
-<script>
-if(localStorage.getItem("age")!="yes"){
-window.location.href="age.html";
-}
-</script>
-
-<title>UltraTube Pro</title>
-
-<!-- ✅ ONLY ONE AD SCRIPT -->
-<script async src="https://a.magsrv.com/ad-provider.js"></script>
-
-<style>
-body{margin:0;background:#0b0f1a;color:white;font-family:Arial;}
-.header{padding:10px;background:#111;display:flex;justify-content:space-between;}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:15px;padding:15px;}
-.card{background:#1a1f2e;border-radius:10px;overflow:hidden;cursor:pointer;}
-img{width:100%;height:150px;object-fit:cover;}
-.player{display:none;padding:15px;}
-video{width:100%;border-radius:10px;}
-button{padding:8px;margin:5px;border:none;border-radius:5px;cursor:pointer;}
-.like{background:red;color:white;}
-.comment{background:#1a1f2e;margin:5px;padding:5px;border-radius:5px;}
-.banner{text-align:center;margin:10px 0;}
-</style>
-
+  <title>VideoHub Pro</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body{background:#0d0d0d;color:#fff;font-family:sans-serif;margin:0}
+    header{padding:15px;text-align:center;color:#ff3d00;font-size:22px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;padding:10px}
+    .card{background:#1a1a1a;border-radius:10px;overflow:hidden;cursor:pointer}
+    .card img{width:100%;height:120px;object-fit:cover}
+    .title{padding:6px;font-size:14px}
+  </style>
 </head>
 
 <body>
 
-<div class="header">
-<h2>🔥 UltraTube</h2>
-<button onclick="back()">⬅ Back</button>
-</div>
+<header>🔥 VideoHub Pro</header>
 
-<!-- 🔥 TOP AD -->
-<div class="banner">
-<ins class="eas6a97888e2" data-zoneid="5875106"></ins>
-</div>
-
-<!-- TEST BUTTON -->
-<div style="text-align:center;">
-<button onclick="loadAd()">👉 Load Ads</button>
-</div>
-
-<!-- HOME -->
-<div id="home" class="grid"></div>
-
-<!-- PLAYER -->
-<div id="player" class="player">
-
-<video id="video" controls></video>
-<h3 id="title"></h3>
-
-<!-- 🔥 VIDEO AD -->
-<div class="banner">
-<ins class="eas6a97888e2" data-zoneid="5875106"></ins>
-</div>
-
-<button class="like" onclick="like()">❤️ <span id="likeCount">0</span></button>
-
-<br>
-
-<input id="commentInput" placeholder="Comment..." style="width:70%">
-<button onclick="comment()">Post</button>
-
-<div id="comments"></div>
-
-<h3>🔥 Next Videos</h3>
-<div id="related" class="grid"></div>
-
-</div>
-
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<div class="grid" id="videos"></div>
 
 <script>
-const firebaseConfig = {
-apiKey: "AIzaSy...",
-authDomain: "protube-4ea04.firebaseapp.com",
-databaseURL: "https://protube-4ea04-default-rtdb.firebaseio.com",
-projectId: "protube-4ea04"
-};
+let videos = JSON.parse(localStorage.getItem("videos")) || [];
+let container = document.getElementById("videos");
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-
-let videos={}, currentId=null;
-
-/* LOAD VIDEOS */
-db.ref("videos").on("value",snap=>{
-videos=snap.val()||{};
-showHome();
-});
-
-/* HOME */
-function showHome(){
-let html="";
-for(let id in videos){
-let v=videos[id];
-html+=`
-<div class="card" onclick="play('${id}')">
-<img src="${v.thumb}">
-<h4>${v.title}</h4>
-</div>`;
-}
-document.getElementById("home").innerHTML=html;
+if(videos.length === 0){
+  container.innerHTML = "<p style='padding:20px'>No videos yet. Upload first.</p>";
 }
 
-/* PLAY */
-function play(id){
-currentId=id;
-
-/* 🔥 ADS TRIGGER */
-loadAd();
-
-let v=videos[id];
-document.getElementById("home").style.display="none";
-document.getElementById("player").style.display="block";
-
-startVideo(v);
-}
-
-/* VIDEO */
-function startVideo(v){
-let video=document.getElementById("video");
-video.src=v.url;
-
-video.play().catch(()=>{
-video.muted=true;
-video.play();
-});
-
-document.getElementById("title").innerText=v.title;
-document.getElementById("likeCount").innerText=v.likes||0;
-
-video.onended=()=>autoNext();
-
-loadComments();
-loadRelated(currentId);
-}
-
-/* LOAD AD FUNCTION */
-function loadAd(){
-(AdProvider = window.AdProvider || []).push({"serve": {}});
-}
-
-/* BACK */
-function back(){
-document.getElementById("player").style.display="none";
-document.getElementById("home").style.display="grid";
-}
-
-/* LIKE */
-function like(){
-db.ref("videos/"+currentId+"/likes").transaction(v=>(v||0)+1);
-}
-
-/* COMMENT */
-function comment(){
-let txt=document.getElementById("commentInput").value;
-if(!txt)return;
-db.ref("comments/"+currentId).push({text:txt});
-document.getElementById("commentInput").value="";
-}
-
-/* COMMENTS */
-function loadComments(){
-db.ref("comments/"+currentId).on("value",snap=>{
-let data=snap.val()||{};
-let html="";
-for(let i in data){
-html+=`<div class="comment">${data[i].text}</div>`;
-}
-document.getElementById("comments").innerHTML=html;
-});
-}
-
-/* RELATED */
-function loadRelated(current){
-let html="";
-for(let id in videos){
-if(id!==current){
-let v=videos[id];
-html+=`
-<div class="card" onclick="play('${id}')">
-<img src="${v.thumb}">
-<h4>${v.title}</h4>
-</div>`;
-}
-}
-document.getElementById("related").innerHTML=html;
-}
-
-/* AUTO NEXT */
-function autoNext(){
-let keys=Object.keys(videos);
-let next=keys[Math.floor(Math.random()*keys.length)];
-play(next);
-}
-
-/* 🔥 AUTO LOAD */
-window.onload = function(){
-setTimeout(loadAd,2000);
-};
-
-/* 🔥 CLICK TRIGGER */
-document.addEventListener("click", loadAd);
-
-</script>
-
-</body>
-</html>
+videos.forEach((v,i)=>{
+  container.innerHTML += `
+    <div class="card" onclick="openVideo(${i})">
+      <img src="${v.thumb}">
+      <div class
