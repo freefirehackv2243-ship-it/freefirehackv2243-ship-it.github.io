@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Upload Video</title>
+</head>
+<body style="background:#111;color:#fff">
+
+<h2>Upload Video</h2>
+
+<input type="file" id="file" accept="video/*"><br><br>
+<input type="text" id="title" placeholder="Video title"><br><br>
+
+<button onclick="uploadVideo()">Upload</button>
+
+<p id="status"></p>
+
+<script>
+async function uploadVideo(){
+  let file = document.getElementById("file").files[0];
+  let title = document.getElementById("title").value;
+
+  let formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "Myupload");
+
+  document.getElementById("status").innerText = "Uploading...";
+
+  let res = await fetch("https://api.cloudinary.com/v1_1/dhsugmzw0/video/upload", {
+    method: "POST",
+    body: formData
+  });
+
+  let data = await res.json();
+
+  let videos = JSON.parse(localStorage.getItem("videos")) || [];
+
+  videos.push({
+    title: title,
+    src: data.secure_url,
+    thumb: "https://res.cloudinary.com/dhsugmzw0/video/upload/" + data.public_id + ".jpg"
+  });
+
+  localStorage.setItem("videos", JSON.stringify(videos));
+
+  document.getElementById("status").innerText = "Upload Done ✅";
+}
+</script>
+
+</body>
+</html>
